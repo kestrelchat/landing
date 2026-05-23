@@ -1,0 +1,156 @@
+---
+interface Props {
+    item: {
+        label: string;
+        href?: string;
+        external?: boolean;
+        children?: any[];
+    };
+}
+
+const { item } = Astro.props;
+const hasDropdown = item.children && item.children.length > 0;
+---
+
+<div class="nav-item">
+    {
+        item.href && !hasDropdown ? (
+            <a
+                class="nav-link"
+                href={item.href}
+                target={item.external ? "_blank" : undefined}
+                rel={item.external ? "noopener noreferrer" : undefined}
+            >
+                {item.label}
+            </a>
+        ) : (
+            <span class="nav-link nav-label" role="button" tabindex="0">
+                {item.label}
+            </span>
+        )
+    }
+
+    {
+        hasDropdown && (
+            <div class="dropdown">
+                {item.children!.map((child) => (
+                    <a
+                        class="dropdown-item"
+                        href={child.href}
+                        target={child.external ? "_blank" : undefined}
+                        rel={child.external ? "noopener noreferrer" : undefined}
+                    >
+                        {child.label}
+                    </a>
+                ))}
+            </div>
+        )
+    }
+</div>
+
+<style>
+    .nav-item {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 15px;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        user-select: none;
+    }
+
+    .nav-link:hover {
+        color: var(--colors-accent);
+    }
+
+    .dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 6px;
+
+        background: var(--background-secondary);
+        border: 1px solid var(--background-tetiary);
+        border-radius: 8px;
+        padding: 8px;
+        min-width: 160px;
+        z-index: 50;
+
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(6px);
+        pointer-events: none;
+
+        transition: 0.15s ease;
+    }
+
+    .nav-item:hover .dropdown,
+    .nav-item.open .dropdown {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    .dropdown-item {
+        color: var(--text-secondary);
+        text-decoration: none;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 14px;
+        transition:
+            background 0.15s ease,
+            color 0.15s ease;
+    }
+
+    .dropdown-item:hover {
+        background: var(--background-tetiary);
+        color: var(--text-primary);
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const items = document.querySelectorAll(".nav-item");
+
+        items.forEach((item) => {
+            const trigger = item.querySelector(".nav-label");
+
+            if (!trigger) return;
+
+            trigger.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                item.classList.toggle("open");
+            });
+        });
+
+        // Close dropdowns on outside click
+        document.addEventListener("click", (e) => {
+            const navItems = document.querySelectorAll(".nav-item");
+            navItems.forEach((item) => {
+                if (!item.contains(e.target)) {
+                    item.classList.remove("open");
+                }
+            });
+        });
+
+        // Close on escape
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                document.querySelectorAll(".nav-item").forEach((item) => {
+                    item.classList.remove("open");
+                });
+            }
+        });
+    });
+</script>

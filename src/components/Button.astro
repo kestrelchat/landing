@@ -1,0 +1,52 @@
+---
+export interface Props {
+    href?: string;
+    variant?: "primary" | "secondary";
+    type?: "button" | "submit";
+}
+
+const { href, variant = "primary", type = "button" } = Astro.props;
+
+const Component = href ? "a" : "button";
+---
+
+<Component href={href} type={href ? undefined : type} class={`btn ${variant}`}>
+    <slot />
+</Component>
+
+<style>
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 16px;
+        border-radius: 9999px;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+        user-select: none;
+        transition:
+            background-color 0.2s ease,
+            color 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .primary {
+        color: var(--text-primary);
+        background-color: var(--colors-accent);
+    }
+
+    .secondary {
+        border: 1px solid var(--colors-accent);
+        color: var(--colors-accent);
+    }
+
+    .primary:hover {
+        background-color: var(--colors-accent-hover);
+    }
+
+    .secondary:hover {
+        background-color: var(--colors-accent-hover);
+        color: var(--text-primary);
+    }
+</style>

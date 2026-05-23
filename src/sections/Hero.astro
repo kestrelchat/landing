@@ -1,0 +1,149 @@
+---
+import Button from "../components/Button.astro";
+import HeroGraphic from "../assets/HeroGraphic.svg";
+---
+
+<section class="hero">
+    <div class="hero-overview">
+        <div class="hero-left">
+            <div class="hero-tagline">
+                <p class="eyebrow">Free & open source</p>
+
+                <h1>Messaging you can feel good about</h1>
+
+                <p class="sub">
+                    We're building Kestrel because we believe good communication
+                    shouldn't cost you your privacy. Open source, self-hostable,
+                    and fast enough that you'll actually enjoy using it.
+                </p>
+
+                <div class="cta">
+                    <Button
+                        href="https://github.com/kestrelchat"
+                        variant="primary"
+                    >
+                        View on GitHub
+                    </Button>
+                    <Button
+                        href="https://discord.gg/T8rAX8DmNS"
+                        variant="secondary"
+                    >
+                        Join our Discord
+                    </Button>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-graphic">
+            <img src={HeroGraphic.src} draggable="false" />
+        </div>
+    </div>
+</section>
+
+<style>
+    .hero {
+        background-color: var(--background-primary);
+        height: calc(100vh - var(--navbar-height, 0px));
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .hero-overview {
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .hero-left {
+        flex: 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 80px;
+    }
+
+    .hero-tagline {
+        max-width: 560px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .eyebrow {
+        color: var(--colors-accent-light);
+        margin: 0;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .hero-tagline h1 {
+        color: var(--colors-accent);
+        font-size: clamp(28px, 5vw, 64px);
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .sub {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        max-width: 55ch;
+        margin: 0;
+    }
+
+    .cta {
+        margin-top: 24px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .hero-graphic {
+        flex: 0 0 auto;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .hero-graphic img {
+        width: 100%;
+        max-width: 520px;
+        height: auto;
+        border-radius: 8px 0 0 8px;
+        user-select: none;
+        pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+        .hero-overview {
+            flex-direction: column;
+        }
+
+        .hero-left {
+            padding: 0 20px;
+            max-width: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-graphic {
+            display: none;
+        }
+
+        .cta {
+            margin-top: 0;
+            flex-direction: column;
+            width: 100%;
+            align-items: center;
+        }
+
+        .cta :global(*) {
+            width: 90%;
+        }
+    }
+</style>

@@ -1,0 +1,426 @@
+---
+import NavItem from "../components/NavItem.astro";
+import { navigation } from "../config/navigation";
+---
+
+<header class="navbar" id="navbar">
+    <a href="/" class="nav-logo" aria-label="Home"></a>
+
+    <nav class="desktop-nav">
+        {navigation.map((item) => <NavItem item={item} />)}
+    </nav>
+
+    <button
+        class="nav-btn"
+        id="nav-btn"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+    >
+        <span class="hamburger-line" aria-hidden="true"></span>
+        <span class="hamburger-line" aria-hidden="true"></span>
+        <span class="hamburger-line" aria-hidden="true"></span>
+    </button>
+</header>
+
+<nav
+    class="mobile-menu"
+    id="mobile-menu"
+    aria-label="Mobile menu"
+    aria-hidden="true"
+>
+    <div class="mobile-nav-items">
+        {navigation.map((item) => <NavItem item={item} />)}
+    </div>
+</nav>
+
+<style>
+    .navbar {
+        width: 100%;
+        padding: 60px 80px;
+        background-color: var(--background-primary);
+        display: flex;
+        align-items: center;
+        position: relative;
+        z-index: 40;
+        box-sizing: border-box;
+    }
+
+    .navbar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--colors-accent);
+        z-index: -1;
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.3s ease;
+        pointer-events: none;
+    }
+
+    .navbar.menu-open::before {
+        transform: scaleX(1);
+    }
+
+    .navbar::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--background-primary);
+        z-index: -2;
+    }
+
+    .nav-logo {
+        width: 269px;
+        flex: 0 1 269px;
+        min-width: 120px;
+        height: 60px;
+        background-color: var(--colors-accent);
+        mask: url("/logo.svg") center / contain no-repeat;
+        -webkit-mask: url("/logo.svg") center / contain no-repeat;
+        text-decoration: none;
+        transition:
+            background-color 0.3s ease,
+            width 0.2s ease;
+        position: relative;
+        z-index: 1;
+    }
+
+    .navbar.menu-open .nav-logo {
+        background-color: var(--text-primary);
+    }
+
+    .desktop-nav {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        margin-left: auto;
+        gap: 20px;
+    }
+
+    :global(.desktop-nav .nav-item) {
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-btn {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        margin-left: auto;
+        position: relative;
+        z-index: 1;
+        min-width: 44px;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-btn:focus {
+        outline: 2px solid var(--text-primary);
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
+    .hamburger-line {
+        width: 24px;
+        height: 2px;
+        background-color: var(--text-primary);
+        display: block;
+        transition:
+            transform 0.3s ease,
+            opacity 0.2s ease;
+        transform-origin: center;
+        will-change: transform, opacity;
+    }
+
+    .nav-btn.open .hamburger-line:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .nav-btn.open .hamburger-line:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0);
+    }
+
+    .nav-btn.open .hamburger-line:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .mobile-menu {
+        position: fixed;
+        top: var(--navbar-height, 180px);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: calc(100vh - var(--navbar-height, 180px));
+        background-color: var(--colors-accent);
+        z-index: 30;
+        display: none;
+        flex-direction: column;
+        padding: 0;
+        gap: 0;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        will-change: transform;
+        box-sizing: border-box;
+    }
+
+    .mobile-menu.open {
+        transform: translateX(0);
+    }
+
+    .mobile-nav-items {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+    }
+
+    :global(.mobile-menu .nav-item) {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 16px 20px;
+        align-items: flex-start;
+    }
+
+    :global(.mobile-menu .nav-link) {
+        color: var(--text-primary);
+        text-align: left;
+    }
+
+    :global(.mobile-menu .nav-link:hover) {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    :global(.mobile-menu .dropdown) {
+        position: static;
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin-top: 8px;
+        opacity: 0;
+        visibility: hidden;
+        transform: none;
+        pointer-events: none;
+        display: none;
+        flex-direction: column;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+
+    :global(.mobile-menu .nav-item.open .dropdown) {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        display: flex;
+        max-height: 500px;
+    }
+
+    :global(.mobile-menu .dropdown-item) {
+        padding: 8px 0;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    :global(.mobile-menu .dropdown-item:hover) {
+        color: var(--text-primary);
+        background: transparent;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .hamburger-line,
+        .mobile-menu {
+            transition: none !important;
+            animation: none !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .navbar {
+            padding: 20px;
+        }
+
+        .desktop-nav {
+            display: none;
+        }
+
+        .nav-logo {
+            margin-right: 12px;
+        }
+
+        .nav-btn {
+            display: flex;
+            margin-left: auto;
+        }
+
+        .mobile-menu {
+            display: flex;
+        }
+    }
+</style>
+
+<script>
+    const navBtn = document.getElementById("nav-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const navbar = document.getElementById("navbar");
+
+    let mobileOpen = false;
+    let lastFocusedElement: HTMLElement | null = null;
+
+    const getFocusableElements = (
+        container: HTMLElement | null,
+    ): HTMLElement[] => {
+        if (!container) return [];
+
+        const selectors =
+            'a[href], area[href], input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
+
+        const nodes = container.querySelectorAll(selectors);
+
+        const focusable: HTMLElement[] = [];
+
+        nodes.forEach((node: Element) => {
+            if (node instanceof HTMLElement) {
+                if (
+                    !node.hasAttribute("disabled") &&
+                    (node.offsetWidth > 0 ||
+                        node.offsetHeight > 0 ||
+                        node.getAttribute("tabindex") !== null)
+                ) {
+                    focusable.push(node);
+                }
+            }
+        });
+
+        return focusable;
+    };
+
+    const onDocumentClick = (e: globalThis.MouseEvent) => {
+        if (!mobileOpen) return;
+        if (!mobileMenu || !navBtn) return;
+
+        const target = e.target;
+
+        if (!(target instanceof Node)) return;
+
+        if (!mobileMenu.contains(target) && !navBtn.contains(target)) {
+            toggleMenu();
+        }
+    };
+
+    const onKeyDown = (e: globalThis.KeyboardEvent) => {
+        if (!mobileOpen) return;
+        if (e.key === "Escape") {
+            e.preventDefault();
+            toggleMenu();
+            return;
+        }
+
+        if (e.key === "Tab") {
+            const focusable = getFocusableElements(mobileMenu);
+            if (focusable.length === 0) {
+                e.preventDefault();
+                return;
+            }
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            } else if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            }
+        }
+    };
+
+    const toggleMenu = () => {
+        mobileOpen = !mobileOpen;
+
+        if (mobileOpen) {
+            lastFocusedElement =
+                document.activeElement instanceof HTMLElement
+                    ? document.activeElement
+                    : null;
+
+            navBtn?.classList.add("open");
+            mobileMenu?.classList.add("open");
+            navbar?.classList.add("menu-open");
+
+            navBtn?.setAttribute("aria-expanded", "true");
+            navBtn?.setAttribute("aria-label", "Close menu");
+            mobileMenu?.setAttribute("aria-hidden", "false");
+
+            document.body.style.overflow = "hidden";
+
+            const focusable = getFocusableElements(mobileMenu);
+            if (focusable.length) focusable[0].focus();
+
+            setTimeout(
+                () => document.addEventListener("click", onDocumentClick),
+                0,
+            );
+            document.addEventListener("keydown", onKeyDown);
+        } else {
+            navBtn?.classList.remove("open");
+            mobileMenu?.classList.remove("open");
+            navbar?.classList.remove("menu-open");
+
+            navBtn?.setAttribute("aria-expanded", "false");
+            navBtn?.setAttribute("aria-label", "Open menu");
+            mobileMenu?.setAttribute("aria-hidden", "true");
+
+            document.body.style.overflow = "";
+
+            document.removeEventListener("click", onDocumentClick);
+            document.removeEventListener("keydown", onKeyDown);
+
+            if (
+                lastFocusedElement &&
+                typeof lastFocusedElement.focus === "function"
+            ) {
+                lastFocusedElement.focus();
+            } else {
+                navBtn?.focus();
+            }
+        }
+    };
+
+    navBtn?.addEventListener("click", toggleMenu);
+
+    const mobileNavLinks = document.querySelectorAll(".mobile-menu .nav-link");
+    mobileNavLinks.forEach((item) => {
+        item.addEventListener("click", (e) => {
+            if (!item.classList.contains("nav-label")) {
+                if (mobileOpen) toggleMenu();
+            }
+        });
+    });
+
+    const updateNavbarHeight = () => {
+        document.documentElement.style.setProperty(
+            "--navbar-height",
+            `${navbar?.offsetHeight}px`,
+        );
+    };
+
+    updateNavbarHeight();
+    window.addEventListener("resize", updateNavbarHeight);
+    window.addEventListener("load", updateNavbarHeight);
+</script>
