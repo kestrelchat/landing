@@ -5,6 +5,7 @@ dist/
 
 # yarn
 .yarn/*
+.yarn/install-state.gz
 !.yarn/releases
 !.yarn/plugins
 !.yarn/patches
