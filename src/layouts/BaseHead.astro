@@ -9,13 +9,13 @@ interface Props {
 
 const {
     title = "Kestrel",
-    description = "A modern platform for structured, real-time communication.",
+    description = "Kestrel is a modern real-time communication platform focused on structure, performance, and community organization.",
     ogImagePath = "/og/banner.png",
 } = Astro.props;
 
-const canonicalUrl = Astro.url.origin;
+const canonicalUrl = Astro.url.href;
 
-const ogImage = new URL(ogImagePath, canonicalUrl).toString();
+const ogImage = new URL(ogImagePath, Astro.url.origin).toString();
 ---
 
 <!doctype html>
@@ -32,12 +32,19 @@ const ogImage = new URL(ogImagePath, canonicalUrl).toString();
         <meta name="viewport" content="width=device-width" />
         <meta name="generator" content={Astro.generator} />
 
+        <link rel="canonical" href={canonicalUrl} />
+
         <meta name="theme-color" content="#6e6ade" />
         <meta name="color-scheme" content="dark light" />
 
+        <meta property="og:site_name" content="Kestrel" />
+        <meta property="og:locale" content="en_US" />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1280" />
+        <meta property="og:image:height" content="640" />
+        <meta property="og:image:alt" content="Kestrel banner" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={Astro.url} />
 
@@ -45,6 +52,35 @@ const ogImage = new URL(ogImagePath, canonicalUrl).toString();
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
+
+        <link rel="sitemap" href="/sitemap-index.xml" />
+
+        <meta name="format-detection" content="telephone=no" />
+
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                name: "Kestrel",
+                applicationCategory: "CommunicationApplication",
+                operatingSystem: "Web",
+                description,
+                url: canonicalUrl,
+                image: ogImage,
+            })}
+        />
+
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: "Kestrel",
+                url: "https://kestrel.chat",
+                logo: "https://kestrel.chat/logo.png",
+            })}
+        />
 
         <GlobalStyles />
     </head>
