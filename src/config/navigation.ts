@@ -8,7 +8,7 @@ export type NavItem = {
 export const navigation: NavItem[] = [
   {
     label: "Roadmap",
-    href: "https://github.com/orgs/kestrelchat/projects/2",
+    href: "https://github.com/orgs/kestrelchat/projects/6",
     external: true,
   },
   {
