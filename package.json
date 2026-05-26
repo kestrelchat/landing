@@ -17,7 +17,9 @@
   "dependencies": {
     "@astrojs/cloudflare": "^13.5.4",
     "@astrojs/sitemap": "^3.7.2",
-    "astro": "^6.3.5"
+    "@fontsource/dm-sans": "^5.2.8",
+    "astro": "^6.3.5",
+    "normalize.css": "^8.0.1"
   },
   "devDependencies": {
     "wrangler": "^4.94.0"
