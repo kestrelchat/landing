@@ -626,6 +626,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource/dm-sans@npm:^5.2.8":
+  version: 5.2.8
+  resolution: "@fontsource/dm-sans@npm:5.2.8"
+  checksum: 10c0/34451e30b1fe29a075946b8d42d8867883e3f0ac3cb1d5d29493a311006c67d1b766369c32f39820b86a0bacf8fbd3cc2c02e55744809b8ece67141dfadcac5e
+  languageName: node
+  linkType: hard
+
 "@img/colour@npm:^1.0.0":
   version: 1.1.0
   resolution: "@img/colour@npm:1.1.0"
@@ -2323,7 +2330,9 @@ __metadata:
   dependencies:
     "@astrojs/cloudflare": "npm:^13.5.4"
     "@astrojs/sitemap": "npm:^3.7.2"
+    "@fontsource/dm-sans": "npm:^5.2.8"
     astro: "npm:^6.3.5"
+    normalize.css: "npm:^8.0.1"
     wrangler: "npm:^4.94.0"
   languageName: unknown
   linkType: soft
@@ -3012,6 +3021,13 @@ __metadata:
   version: 3.0.0
   resolution: "normalize-path@npm:3.0.0"
   checksum: 10c0/e008c8142bcc335b5e38cf0d63cfd39d6cf2d97480af9abdbe9a439221fd4d749763bab492a8ee708ce7a194bb00c9da6d0a115018672310850489137b3da046
+  languageName: node
+  linkType: hard
+
+"normalize.css@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "normalize.css@npm:8.0.1"
+  checksum: 10c0/4ddf56d1af5ca755fa5e692e718316d8758ecb792aa96e1ad206824b5810a043763d681d6f7697d46573515f5e9690038b4c91a95c1997567128815545fb8cd7
   languageName: node
   linkType: hard
 
