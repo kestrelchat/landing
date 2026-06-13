@@ -12,8 +12,13 @@ export const navigation: NavItem[] = [
     external: true,
   },
   {
-    label: "Community",
+    label: "Discord",
     href: "https://go.kestrel.chat/discord",
+    external: true,
+  },
+  {
+    label: "Matrix",
+    href: "https://go.kestrel.chat/matrix",
     external: true,
   },
 ];
