@@ -36,3 +36,28 @@ collections:
       - { label: Name, name: name, widget: string }
       - { label: Avatar, name: avatar, widget: image, required: false }
       - { label: Role, name: role, widget: string, required: false }
+
+  - name: blog
+    label: Blog
+    folder: src/content/blog
+    create: true
+    slug: "{{slug}}"
+
+    media_folder: public/uploads/blog
+    public_folder: /uploads/blog
+
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Cover Image, name: image, widget: image, required: false }
+      - { label: Image Alt, name: imageAlt, widget: string, required: false }
+      - label: Author
+        name: author
+        widget: relation
+        collection: authors
+        search_fields: ["name"]
+        value_field: name
+      - { label: Tags, name: tags, widget: list, required: false }
+      - { label: Featured, name: featured, widget: boolean, default: false }
+      - { label: Draft, name: draft, widget: boolean, default: false }
+      - { label: Date, name: date, widget: datetime }
+      - { label: Body, name: body, widget: markdown }
