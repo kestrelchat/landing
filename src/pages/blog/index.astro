@@ -1,0 +1,167 @@
+---
+import BaseHead from "../../layouts/BaseHead.astro";
+import NavBar from "../../sections/NavBar.astro";
+import BlogCard from "../../components/BlogCard.astro";
+import { getAuthor, getAvatarUrl } from "../../config/authors";
+
+function getSlug(filePath: string): string {
+    const filename = filePath.split("/").pop()?.replace(/\.md$/, "") ?? "";
+    return filename.replace(/^\d{4}-\d{2}-/, "");
+}
+interface BlogFrontmatter {
+    title: string;
+    author?: string;
+    tags?: string[];
+    featured?: boolean;
+    draft?: boolean;
+    date: string;
+    image?: string;
+    imageAlt?: string;
+}
+
+const blogModules = import.meta.glob("../../content/blog/*.md", {
+    eager: true,
+});
+const blogPosts = Object.values(blogModules) as any[];
+
+const publishedPosts = blogPosts
+    .filter((post: any) => !post.frontmatter.draft)
+    .sort(
+        (a: any, b: any) =>
+            new Date(b.frontmatter.date).getTime() -
+            new Date(a.frontmatter.date).getTime(),
+    );
+---
+
+<BaseHead
+    title="Kestrel - Blog"
+    description="Updates, devlogs, and announcements from Kestrel!"
+/>
+
+<NavBar />
+
+<main class="blog-listing">
+    <header class="blog-header">
+        <div class="blog-header-content">
+            <p class="eyebrow">Blog</p>
+            <h1>Latest from Kestrel</h1>
+            <p class="blog-subtitle">
+                Updates, devlogs, and announcements from Kestrel!
+            </p>
+        </div>
+    </header>
+
+    {
+        publishedPosts.length > 0 ? (
+            <div class="blog-grid">
+                {publishedPosts.map((post) => {
+                    const frontmatter = post.frontmatter as BlogFrontmatter;
+                    const date = new Date(frontmatter.date);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, "0");
+                    const slug = getSlug(post.file);
+
+                    const authorData = frontmatter.author
+                        ? getAuthor(frontmatter.author)
+                        : undefined;
+
+                    return (
+                        <BlogCard
+                            title={frontmatter.title}
+                            slug={slug}
+                            date={date}
+                            year={year}
+                            month={month}
+                            featured={frontmatter.featured}
+                            image={frontmatter.image}
+                            imageAlt={frontmatter.imageAlt}
+                            authorName={authorData?.name}
+                            authorAvatar={getAvatarUrl(authorData)}
+                        />
+                    );
+                })}
+            </div>
+        ) : (
+            <div class="blog-empty">
+                <p>No blog posts published yet. Check back soon!</p>
+            </div>
+        )
+    }
+</main>
+
+<style>
+    .blog-listing {
+        min-height: 100vh;
+        background-color: var(--background-primary);
+    }
+
+    .blog-header {
+        padding: 80px 80px 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .blog-header-content {
+        max-width: 1200px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .eyebrow {
+        color: var(--colors-accent-light);
+        margin: 0;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    .blog-header h1 {
+        margin: 0;
+        font-size: clamp(28px, 4vw, 48px);
+        color: var(--colors-accent);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .blog-subtitle {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 16px;
+        line-height: 1.6;
+        max-width: 55ch;
+    }
+
+    .blog-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 80px 120px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 32px;
+    }
+
+    .blog-empty {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 120px 20px;
+        color: var(--text-secondary);
+        font-size: 16px;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .blog-header {
+            padding: 40px 20px 0;
+        }
+
+        .blog-grid {
+            padding: 40px 20px 80px;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+    }
+</style>
