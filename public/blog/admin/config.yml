@@ -1,7 +1,11 @@
-local_backend: true
+local_backend: false
 
 backend:
-  name: git-gateway
+  name: github
+  repo: kestrelchat/landing
+  branch: main
+  base_url: https://decap.kestrel.chat
+  auth_endpoint: /auth
   commit_messages:
     create: 'docs(blog): create {{collection}} "{{slug}}"'
     update: 'docs(blog): update {{collection}} "{{slug}}"'
