@@ -7,6 +7,7 @@ interface Props {
     ogImagePath?: string;
     tags?: string[];
     publishedTime?: string;
+    author?: string;
 }
 
 const {
@@ -15,6 +16,7 @@ const {
     ogImagePath = "/og/banner.png",
     tags,
     publishedTime,
+    author,
 } = Astro.props;
 
 const canonicalUrl = Astro.url.href;
@@ -121,7 +123,7 @@ const ogType = publishedTime ? "article" : "website";
                         datePublished: publishedTime,
                         author: {
                             "@type": "Person",
-                            name: tags?.[0] ?? "Kestrel",
+                            name: author ?? "Kestrel",
                         },
                         publisher: {
                             "@type": "Organization",
