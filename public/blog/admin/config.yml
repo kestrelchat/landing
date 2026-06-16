@@ -1,0 +1,38 @@
+local_backend: true
+
+backend:
+  name: git-gateway
+  commit_messages:
+    create: 'docs(blog): create {{collection}} "{{slug}}"'
+    update: 'docs(blog): update {{collection}} "{{slug}}"'
+    delete: 'docs(blog): remove {{collection}} "{{slug}}"'
+    uploadMedia: "docs(blog): upload {{path}}"
+    deleteMedia: "docs(blog): delete {{path}}"
+    openAuthoring: "{{message}}"
+
+logo:
+  src: /logo-purple.svg
+  show_in_header: true
+
+site_url: https://kestrel.chat/
+display_url: kestrel.chat
+
+media_folder: public/uploads
+public_folder: /uploads
+
+editor:
+  preview: false
+
+collections:
+  - name: authors
+    label: Authors
+    folder: src/content/authors
+    create: true
+    slug: "{{name}}"
+    extension: yml
+    format: yml
+
+    fields:
+      - { label: Name, name: name, widget: string }
+      - { label: Avatar, name: avatar, widget: image, required: false }
+      - { label: Role, name: role, widget: string, required: false }
