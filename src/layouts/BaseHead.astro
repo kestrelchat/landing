@@ -5,17 +5,23 @@ interface Props {
     title?: string;
     description?: string;
     ogImagePath?: string;
+    tags?: string[];
+    publishedTime?: string;
 }
 
 const {
     title = "Kestrel - Messaging you can feel good about",
     description = "Kestrel is a modern real-time communication platform focused on structure, performance, and community organization.",
     ogImagePath = "/og/banner.png",
+    tags,
+    publishedTime,
 } = Astro.props;
 
 const canonicalUrl = Astro.url.href;
 
 const ogImage = new URL(ogImagePath, Astro.url.origin).toString();
+
+const ogType = publishedTime ? "article" : "website";
 ---
 
 <!doctype html>
@@ -45,8 +51,28 @@ const ogImage = new URL(ogImagePath, Astro.url.origin).toString();
         <meta property="og:image:width" content="1280" />
         <meta property="og:image:height" content="640" />
         <meta property="og:image:alt" content="Kestrel banner" />
-        <meta property="og:type" content="website" />
+        <meta property="og:type" content={ogType} />
         <meta property="og:url" content={Astro.url} />
+
+        {
+            publishedTime && (
+                <meta
+                    property="article:published_time"
+                    content={publishedTime}
+                />
+            )
+        }
+
+        {
+            tags &&
+                tags.map((tag) => <meta property="article:tag" content={tag} />)
+        }
+
+        {
+            tags && tags.length > 0 && (
+                <meta name="keywords" content={tags.join(", ")} />
+            )
+        }
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
@@ -81,6 +107,38 @@ const ogImage = new URL(ogImagePath, Astro.url.origin).toString();
                 logo: "https://kestrel.chat/logo.png",
             })}
         />
+
+        {
+            publishedTime && (
+                <script
+                    type="application/ld+json"
+                    set:html={JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Article",
+                        headline: title,
+                        description,
+                        image: ogImage,
+                        datePublished: publishedTime,
+                        author: {
+                            "@type": "Person",
+                            name: tags?.[0] ?? "Kestrel",
+                        },
+                        publisher: {
+                            "@type": "Organization",
+                            name: "Kestrel",
+                            logo: {
+                                "@type": "ImageObject",
+                                url: "https://kestrel.chat/logo.png",
+                            },
+                        },
+                        mainEntityOfPage: {
+                            "@type": "WebPage",
+                            "@id": canonicalUrl,
+                        },
+                    })}
+                />
+            )
+        }
 
         <GlobalStyles />
     </head>

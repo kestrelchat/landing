@@ -1,9 +1,11 @@
 ---
 import NavItem from "../components/NavItem.astro";
 import { navigation } from "../config/navigation";
+
+const isHome = Astro.url.pathname === "/";
 ---
 
-<header class="navbar" id="navbar">
+<header class:list={{ navbar: true, "navbar--compact": !isHome }} id="navbar">
     <a href="/" class="nav-logo" aria-label="Home"></a>
 
     <nav class="desktop-nav">
@@ -44,6 +46,10 @@ import { navigation } from "../config/navigation";
         position: relative;
         z-index: 40;
         box-sizing: border-box;
+    }
+
+    .navbar--compact {
+        padding: 30px;
     }
 
     .navbar::before {

@@ -1,0 +1,366 @@
+---
+import BaseHead from "../../layouts/BaseHead.astro";
+import NavBar from "../../sections/NavBar.astro";
+import { getAuthor, getAvatarUrl } from "../../config/authors";
+
+function getSlug(filePath: string): string {
+    const filename = filePath.split("/").pop()?.replace(/\.md$/, "") ?? "";
+    return filename.replace(/^\d{4}-\d{2}-/, "");
+}
+
+export const prerender = false;
+
+const path = Astro.params.path;
+
+if (!path) {
+    return Astro.redirect("/blog");
+}
+
+const segments = path.split("/");
+const slug = segments[segments.length - 1];
+
+if (!slug) {
+    return Astro.redirect("/blog");
+}
+
+const blogModules = import.meta.glob("../../content/blog/*.md", {
+    eager: true,
+});
+const blogPosts = Object.values(blogModules) as any[];
+const post = blogPosts.find((p: any) => {
+    const fileSlug = getSlug(p.file);
+    return fileSlug === slug;
+});
+
+if (!post) {
+    return Astro.redirect("/blog");
+}
+
+const frontmatter = post.frontmatter;
+
+const date = new Date(frontmatter.date);
+const canonicalYear = String(date.getFullYear());
+const canonicalMonth = String(date.getMonth() + 1).padStart(2, "0");
+const canonicalPath = `${canonicalYear}/${canonicalMonth}/${slug}`;
+
+if (path !== canonicalPath) {
+    return Astro.redirect(`/blog/${canonicalPath}`);
+}
+
+const formattedDate = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+});
+
+const Content = post.Content;
+---
+
+<BaseHead
+    title={`Kestrel - ${frontmatter.title}`}
+    description={frontmatter.description ??
+        `${frontmatter.title} by ${frontmatter.author}`}
+    ogImagePath={frontmatter.image}
+    tags={frontmatter.tags}
+    publishedTime={frontmatter.date}
+/>
+
+<NavBar />
+
+<main class="blog-post">
+    <article class="post-container">
+        <header class="post-header">
+            <a href="/blog" class="post-back">&lt; Back to blog</a>
+
+            <p class="eyebrow">
+                <time datetime={date.toISOString()}>{formattedDate}</time>
+            </p>
+
+            {
+                frontmatter.image && (
+                    <div class="post-cover">
+                        <img
+                            src={frontmatter.image}
+                            alt={frontmatter.imageAlt ?? ""}
+                        />
+                    </div>
+                )
+            }
+
+            <h1>{frontmatter.title}</h1>
+
+            <div class="post-meta">
+                {
+                    (() => {
+                        const authorData = frontmatter.author
+                            ? getAuthor(frontmatter.author)
+                            : undefined;
+                        if (!authorData) return null;
+                        return (
+                            <div class="post-author">
+                                <img
+                                    class="post-author-avatar"
+                                    src={getAvatarUrl(authorData)}
+                                    alt=""
+                                    width="32"
+                                    height="32"
+                                    loading="lazy"
+                                />
+                                <div class="post-author-text">
+                                    <span class="author-name">
+                                        {authorData.name}
+                                    </span>
+                                    {authorData.role && (
+                                        <span class="author-role">
+                                            {authorData.role}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })()
+                }
+            </div>
+        </header>
+
+        <div class="post-content">
+            <Content />
+        </div>
+    </article>
+</main>
+
+<style>
+    .blog-post {
+        min-height: 100vh;
+        background-color: var(--background-primary);
+    }
+
+    .post-container {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 60px 24px 120px;
+    }
+
+    .post-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--colors-accent-light);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 32px;
+        transition: color 0.2s ease;
+    }
+
+    .post-back:hover {
+        color: var(--colors-accent);
+    }
+
+    .post-header {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 48px;
+    }
+
+    .eyebrow {
+        color: var(--colors-accent-light);
+        margin: 0;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    .post-header h1 {
+        margin: 0;
+        font-size: clamp(32px, 5vw, 52px);
+        color: var(--colors-accent);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+    }
+
+    .post-meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 16px;
+        margin-top: 8px;
+    }
+
+    .post-author {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .post-author-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+        background-color: var(--background-tetiary);
+    }
+
+    .post-author-text {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    .author-name {
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .author-role {
+        color: var(--text-secondary);
+        font-size: 12px;
+    }
+
+    .post-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        background-color: var(--background-tetiary);
+        color: var(--text-secondary);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+    }
+
+    .post-cover {
+        width: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-top: 8px;
+        background-color: var(--background-secondary);
+    }
+
+    .post-cover img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .post-content {
+        font-size: 17px;
+        line-height: 1.75;
+        color: var(--text-primary);
+    }
+
+    :global(.post-content p) {
+        margin: 0 0 1.5em;
+        color: var(--text-secondary);
+    }
+
+    :global(.post-content h2) {
+        margin: 2em 0 0.75em;
+        font-size: 28px;
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    :global(.post-content h3) {
+        margin: 1.75em 0 0.5em;
+        font-size: 22px;
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    :global(.post-content strong) {
+        color: var(--text-primary);
+    }
+
+    :global(.post-content a) {
+        color: var(--colors-accent-light);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        transition: color 0.2s ease;
+    }
+
+    :global(.post-content a:hover) {
+        color: var(--colors-accent);
+    }
+
+    :global(.post-content ul),
+    :global(.post-content ol) {
+        margin: 0 0 1.5em;
+        padding-left: 1.5em;
+        color: var(--text-secondary);
+    }
+
+    :global(.post-content li) {
+        margin-bottom: 0.5em;
+    }
+
+    :global(.post-content blockquote) {
+        margin: 1.5em 0;
+        padding: 12px 20px;
+        border-left: 3px solid var(--colors-accent);
+        background-color: var(--background-secondary);
+        border-radius: 0 8px 8px 0;
+        color: var(--text-secondary);
+    }
+
+    :global(.post-content code) {
+        font-family: "DM Mono", monospace;
+        font-size: 0.9em;
+        padding: 2px 6px;
+        background-color: var(--background-tetiary);
+        border-radius: 4px;
+        color: var(--colors-accent-light);
+    }
+
+    :global(.post-content pre) {
+        margin: 1.5em 0;
+        padding: 20px;
+        background-color: var(--background-secondary);
+        border: 1px solid var(--background-tetiary);
+        border-radius: 8px;
+        overflow-x: auto;
+    }
+
+    :global(.post-content pre code) {
+        background: none;
+        padding: 0;
+        color: inherit;
+    }
+
+    :global(.post-content img) {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 1.5em 0;
+    }
+
+    :global(.post-content hr) {
+        border: none;
+        border-top: 1px solid var(--background-tetiary);
+        margin: 2em 0;
+    }
+
+    @media (max-width: 768px) {
+        .post-container {
+            padding: 40px 20px 80px;
+        }
+
+        .post-header h1 {
+            font-size: 28px;
+        }
+
+        .post-content {
+            font-size: 16px;
+        }
+    }
+</style>
