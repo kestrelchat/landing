@@ -17,7 +17,7 @@ logo:
 site_url: https://kestrel.chat/
 display_url: kestrel.chat
 
-media_folder: public/uploads
+media_folder: /public/uploads
 public_folder: /uploads
 
 editor:
@@ -29,8 +29,8 @@ collections:
     folder: src/content/authors
     create: true
     slug: "{{name}}"
-    extension: yml
-    format: yml
+    extension: json
+    format: json
 
     fields:
       - { label: Name, name: name, widget: string }
@@ -41,13 +41,11 @@ collections:
     label: Blog
     folder: src/content/blog
     create: true
-    slug: "{{slug}}"
-
-    media_folder: public/uploads/blog
-    public_folder: /uploads/blog
+    slug: "{{year}}-{{month}}-{{slug}}"
 
     fields:
       - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: string }
       - { label: Cover Image, name: image, widget: image, required: false }
       - { label: Image Alt, name: imageAlt, widget: string, required: false }
       - label: Author
