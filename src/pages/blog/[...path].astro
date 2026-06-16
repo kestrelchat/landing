@@ -29,7 +29,7 @@ const blogModules = import.meta.glob("../../content/blog/*.md", {
 const blogPosts = Object.values(blogModules) as any[];
 const post = blogPosts.find((p: any) => {
     const fileSlug = getSlug(p.file);
-    return fileSlug === slug;
+    return fileSlug === slug && !p.frontmatter.draft;
 });
 
 if (!post) {

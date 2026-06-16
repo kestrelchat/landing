@@ -24,11 +24,13 @@ const blogModules = import.meta.glob("../../content/blog/*.md", {
 });
 const blogPosts = Object.values(blogModules) as any[];
 
-const publishedPosts = blogPosts.sort(
-    (a: any, b: any) =>
-        new Date(b.frontmatter.date).getTime() -
-        new Date(a.frontmatter.date).getTime(),
-);
+const publishedPosts = blogPosts
+    .filter((post: any) => !post.frontmatter.draft)
+    .sort(
+        (a: any, b: any) =>
+            new Date(b.frontmatter.date).getTime() -
+            new Date(a.frontmatter.date).getTime(),
+    );
 ---
 
 <BaseHead
