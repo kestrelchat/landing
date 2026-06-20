@@ -18,7 +18,7 @@
     "@astrojs/cloudflare": "^13.5.4",
     "@astrojs/sitemap": "^3.7.2",
     "@fontsource/dm-sans": "^5.2.8",
-    "astro": "^6.3.5",
+    "astro": "^6.4.6",
     "normalize.css": "^8.0.1"
   },
   "devDependencies": {
