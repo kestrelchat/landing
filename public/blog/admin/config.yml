@@ -2,9 +2,9 @@ local_backend: false
 
 backend:
   name: github
-  repo: kestrelchat/landing
+  repo: sablelabs-de/blog-content
   branch: main
-  base_url: https://decap.kestrel.chat
+  base_url: https://decap.sablelabs.de
   auth_endpoint: /auth
   commit_messages:
     create: 'docs(blog): create {{collection}} "{{slug}}"'
@@ -19,9 +19,9 @@ logo:
   show_in_header: true
 
 site_url: https://kestrel.chat/
-display_url: kestrel.chat
+display_url: sablelabs.de
 
-media_folder: /public/uploads
+media_folder: drafts/images
 public_folder: /uploads
 
 editor:
@@ -43,7 +43,7 @@ collections:
 
   - name: blog
     label: Blog
-    folder: src/content/blog
+    folder: drafts/posts
     create: true
     slug: "{{year}}-{{month}}-{{slug}}"
 
@@ -60,6 +60,6 @@ collections:
         value_field: name
       - { label: Tags, name: tags, widget: list, required: false }
       - { label: Featured, name: featured, widget: boolean, default: false }
-      - { label: Draft, name: draft, widget: boolean, default: false }
+      - { label: Draft, name: draft, widget: boolean, default: true }
       - { label: Date, name: date, widget: datetime }
       - { label: Body, name: body, widget: markdown }
